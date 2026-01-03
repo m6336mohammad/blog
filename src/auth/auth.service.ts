@@ -2,9 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { LoginDTO } from './dto/LoginDTO';
 import { RegisterDTO } from './dto/RegisterDTO';
 import * as bcrypt from 'bcrypt';
+import VerifyCodeDTO from './dto/VerifyCodeDTO';
+import { ChangePasswordDTO } from './dto/ChangePasswordDTO';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
+    constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
   /////REGISTER/////
   async register(registerDto: RegisterDTO) {
     const existingUser = await this.userService.findUserByPhoneNumberForRegister(
@@ -53,12 +61,34 @@ export class AuthService {
 
 
 
-     verifyCodeWithToken() {
-    return { message: 'verifyCodeWithToken' };
+  /////verifyCode/////
+  async verifyCodeWithToken(verifyCodeDTO: VerifyCodeDTO) {
+    const resalt = await this.userService.verifyCodeWithToken(verifyCodeDTO);
+
+    if (resalt === null) {
+      throw new BadRequestException(' کد یک بار استفاده شده یا منقضی شده');
+    }
+
+    const access_token = this.jwtService.sign(
+      { phoneNumber: verifyCodeDTO.phoneNumber },
+      {
+        expiresIn: '3m', // فقط برای تغییر رمز اعتبار دارد
+        secret: process.env.JWT_RESET_SECRET, //افزایش امنیت
+      },
+    );
+    return access_token;
   }
+
   
-     requestResetPasswordWithToken() {
-    return { message: 'requestResetPasswordWithToken' };
+  /////changePassword/////
+  async changePassword(changePasswordDTO: ChangePasswordDTO): Promise<boolean> {
+    const resalt = await this.userService.changePassword(changePasswordDTO);
+
+    if (resalt === null) {
+      throw new BadRequestException('عملیات تغییر رمز ناموفق بود');
+    }
+
+    return resalt;
   }
 
 

@@ -2,7 +2,6 @@ import { BadRequestException, Body, Controller, Get, Post, UseGuards,Request  } 
 import { AuthService } from './auth.service';
 import { RegisterDTO } from './dto/RegisterDTO';
 import { LoginDTO } from './dto/LoginDTO';
-import ForgotPasswordDTO from './dto/ForgotPasswordDTO';
 import VerifyCodeDTO from './dto/VerifyCodeDTO';
 import { ChangePasswordDTO } from './dto/ChangePasswordDTO';
 
@@ -24,14 +23,6 @@ constructor(
     return this.authService.login(body);
   }
 
-  /////forget password request/////
-  async requestResetPasswordWithToken(forgotPasswordDTO: ForgotPasswordDTO) {
-    const user =
-      await this.userService.requestResetPasswordWithTokenOtp(
-        forgotPasswordDTO,
-      );
-    return user;
-  }
 
 
   /////verifyCode/////
