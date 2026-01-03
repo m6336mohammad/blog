@@ -13,6 +13,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
+  
   /////REGISTER/////
   async register(registerDto: RegisterDTO) {
     const existingUser = await this.userService.findUserByPhoneNumberForRegister(
