@@ -11,4 +11,9 @@ constructor(
     async register(){
         return this.authService.register();
     }
+
+     @Get('login')
+    async logIn(){
+        return this.authService.login();
+    }
 }
