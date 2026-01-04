@@ -33,11 +33,6 @@ export default class User {
   @Column({ default: false })
   isPasswordChanged: boolean;
 
-  @Column({ select: false, nullable: true })
-  twoFASecret: string;
-
-  @Column({ default: false })
-  isTwoFAEnabled: boolean;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
