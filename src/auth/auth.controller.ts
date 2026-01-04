@@ -5,6 +5,7 @@ import { LoginDTO } from './dto/LoginDTO';
 import VerifyCodeDTO from './dto/VerifyCodeDTO';
 import { ChangePasswordDTO } from './dto/ChangePasswordDTO';
 import ForgotPasswordDTO from './dto/ForgotPasswordDTO';
+import { ResetPasswordGuard } from './resetPasswordGuard';
 
 @Controller('auth')
 export class AuthController {
@@ -43,7 +44,7 @@ export class AuthController {
   }
 
   /////changePassword/////
-  //   @UseGuards(ResetPasswordGuard)
+    @UseGuards(ResetPasswordGuard)
   @Post('changePassword')
   async changePassword(@Body() changePasswordDTO: ChangePasswordDTO, @Request() req: Request) {
     const payload = req['resetPayload'];
@@ -53,7 +54,7 @@ export class AuthController {
       throw new BadRequestException('رمز عبور و تکرار آن برابر نیستند');
     }
 
-    // const result = await this.authService.changePassword(changePasswordDTO);
+    const result = await this.authService.changePassword(changePasswordDTO);
     return { message: 'تغییر رمز عبور با موفقیت انجام شد' };
   }
 
