@@ -1,39 +1,45 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as path from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // تنظیمات global
+      isGlobal: true, // ✅ مهم: ConfigService همه جا در دسترسه
     }),
 
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'b|tcgP~qhPi5!j#k0)0+[s-J',
-      database: 'blog',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('POSTGRES_HOST'),
+        port: Number(configService.get('POSTGRES_PORT')) || 5432,
+        username: configService.get<string>('POSTGRES_USER'),
+        password: configService.get<string>('POSTGRES_PASSWORD'),
+        database: configService.get<string>('POSTGRES_DB'),
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'], // ✅ مهم
+        synchronize: true,
+      }),
     }),
-    UserModule,
-    AuthModule,
+
 
     JwtModule.registerAsync({
-      imports: [ConfigModule], // ✅ فقط آرایه، بدون const
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'secret',
+        secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '1d' },
       }),
-      inject: [ConfigService],
-      global: true, // ✅ این باعث میشه JwtService همه جا قابل دسترس باشه
+      global: true,
     }),
+
+    UserModule,
+    AuthModule,
   ],
 })
 export class AppModule { }
