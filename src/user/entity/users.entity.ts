@@ -23,12 +23,12 @@ export default class User {
   @Column({ select: false, nullable: true })
   password: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   resetCode: string | null;
 
 
-  @Column({ nullable: true, type: 'timestamp' })
-  resetTokenExpiration : Date | null;
+  @Column({ type: 'timestamp', nullable: true })
+  resetTokenExpiration: Date | null;
 
   @Column({ default: false })
   isPasswordChanged: boolean;
