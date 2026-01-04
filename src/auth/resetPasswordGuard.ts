@@ -5,7 +5,7 @@ import { Request } from 'express';
 
 @Injectable()
 export class ResetPasswordGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService) { }
 
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<Request>();
@@ -19,7 +19,7 @@ export class ResetPasswordGuard implements CanActivate {
 
     try {
       const payload = this.jwtService.verify(token, { secret: process.env.JWT_RESET_SECRET });
-      req['resetPayload'] = payload; // می‌تونی توی متد handler استفاده کنی
+      req['resetPayload'] = payload;
       return true;
     } catch (err) {
       throw new UnauthorizedException('توکن نامعتبر یا منقضی شده است');

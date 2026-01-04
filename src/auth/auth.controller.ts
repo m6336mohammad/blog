@@ -16,13 +16,13 @@ export class AuthController {
   /////register/////
   @Post('register')
   async register(@Body() body: RegisterDTO) {
-    return this.authService.register(body);
+    return await this.authService.register(body);
   }
 
   /////login/////
   @Post('login')
   async login(@Body() body: LoginDTO) {
-    return this.authService.login(body);
+    return await this.authService.login(body);
   }
 
 
@@ -44,7 +44,7 @@ export class AuthController {
   }
 
   /////changePassword/////
-    @UseGuards(ResetPasswordGuard)
+  @UseGuards(ResetPasswordGuard)
   @Post('changePassword')
   async changePassword(@Body() changePasswordDTO: ChangePasswordDTO, @Request() req: Request) {
     const payload = req['resetPayload'];
