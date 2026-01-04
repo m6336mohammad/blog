@@ -7,11 +7,12 @@ import VerifyCodeDTO from 'src/auth/dto/VerifyCodeDTO';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDTO } from 'src/auth/dto/ChangePasswordDTO';
 import ForgotPasswordDTO from 'src/auth/dto/ForgotPasswordDTO';
+import Users from './entity/users.entity';
 
 @Injectable()
 export class UserService {
     constructor(
-        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Users) private readonly userRepository: Repository<Users>,
     ) { }
 
     private generateCode(): string {
@@ -104,6 +105,7 @@ export class UserService {
     await this.userRepository.save(user);
     return true;
   }
+
   //////////
   async requestResetPasswordWithTokenOtp(data: ForgotPasswordDTO) {
     const user = await this.userRepository.findOne({
