@@ -24,10 +24,11 @@ export default class User {
   password: string;
 
   @Column({ nullable: true })
-  resetCode?: string;
+  resetCode: string | null;
+
 
   @Column({ nullable: true, type: 'timestamp' })
-  resetTokenExpiration?: Date;
+  resetTokenExpiration : Date | null;
 
   @Column({ default: false })
   isPasswordChanged: boolean;
