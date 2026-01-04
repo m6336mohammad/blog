@@ -4,6 +4,7 @@ import { RegisterDTO } from './dto/RegisterDTO';
 import { LoginDTO } from './dto/LoginDTO';
 import VerifyCodeDTO from './dto/VerifyCodeDTO';
 import { ChangePasswordDTO } from './dto/ChangePasswordDTO';
+import ForgotPasswordDTO from './dto/ForgotPasswordDTO';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +24,14 @@ constructor(
     return this.authService.login(body);
   }
 
+
+    /////requestResetPassword/////
+  @Post('requestResetPassword')
+  async requestResetPasswordWithToken(@Body() dto: ForgotPasswordDTO) {
+    const code = await this.authService.requestResetPasswordWithToken(dto);
+ 
+    return { message: 'کد تأیید ارسال شد' };
+  }
 
 
   /////verifyCode/////

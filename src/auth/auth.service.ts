@@ -6,19 +6,20 @@ import VerifyCodeDTO from './dto/VerifyCodeDTO';
 import { ChangePasswordDTO } from './dto/ChangePasswordDTO';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
+import ForgotPasswordDTO from './dto/ForgotPasswordDTO';
 
 @Injectable()
 export class AuthService {
-    constructor(
+  constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {}
-  
+  ) { }
+
   /////REGISTER/////
   async register(registerDto: RegisterDTO) {
     const existingUser = await this.userService.findUserByPhoneNumberForRegister(
-        registerDto.phoneNumber,
-      );
+      registerDto.phoneNumber,
+    );
     if (existingUser) {
       throw new BadRequestException('کاربر قبلاً ثبت شده است');
     }
@@ -61,6 +62,14 @@ export class AuthService {
   }
 
 
+  /////forget password request/////
+  async requestResetPasswordWithToken(forgotPasswordDTO: ForgotPasswordDTO) {
+    const user =
+      await this.userService.requestResetPasswordWithTokenOtp(
+        forgotPasswordDTO,
+      );
+    return user;
+  }
 
   /////verifyCode/////
   async verifyCodeWithToken(verifyCodeDTO: VerifyCodeDTO) {
@@ -80,7 +89,7 @@ export class AuthService {
     return access_token;
   }
 
-  
+
   /////changePassword/////
   async changePassword(changePasswordDTO: ChangePasswordDTO): Promise<boolean> {
     const resalt = await this.userService.changePassword(changePasswordDTO);

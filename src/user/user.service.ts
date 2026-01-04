@@ -6,6 +6,7 @@ import { UserDTO } from './dto/userDTO';
 import VerifyCodeDTO from 'src/auth/dto/VerifyCodeDTO';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDTO } from 'src/auth/dto/ChangePasswordDTO';
+import ForgotPasswordDTO from 'src/auth/dto/ForgotPasswordDTO';
 
 @Injectable()
 export class UserService {
@@ -102,6 +103,20 @@ export class UserService {
     user.isPasswordChanged = true;
     await this.userRepository.save(user);
     return true;
+  }
+  //////////
+  async requestResetPasswordWithTokenOtp(data: ForgotPasswordDTO) {
+    const user = await this.userRepository.findOne({
+      where: { phoneNumber: data.phoneNumber },
+    });
+    if (!user) throw new NotFoundException('کاربر پیدا نشد');
+    const code = this.generateCode();
+
+    user.resetCode = code;
+    user.resetTokenExpiration = new Date(Date.now() + 1 * 60 * 1000); // 1 دقیقه
+
+    await this.userRepository.save(user);
+    return code;
   }
 
 

@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // ✅ مهم: ConfigService همه جا در دسترسه
+      isGlobal: true, 
     }),
 
     TypeOrmModule.forRootAsync({
